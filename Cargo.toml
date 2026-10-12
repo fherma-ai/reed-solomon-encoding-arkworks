@@ -1,0 +1,13 @@
+[package]
+name = "fherma-solution"
+version = "0.1.0"
+edition = "2021"
+
+# arkworks: the Rust library most zero-knowledge work is built on.
+[dependencies]
+ark-bn254 = "0.6"
+ark-ff = "0.6"
+ark-poly = "0.6"
+
+[profile.release]
+opt-level = 3
