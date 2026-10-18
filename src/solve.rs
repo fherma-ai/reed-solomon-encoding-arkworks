@@ -33,9 +33,18 @@ fn row(value: Fr, limbs: usize) -> Tensor<u64> {
 }
 
 #[derive(Default)]
-pub struct State { limbs: usize, m: usize }
+pub struct State {
+    limbs: usize,
+    m: usize,
+    /// The root the point names. It belongs to the point now, so it is read
+    /// once here instead of on every case.
+    root: Fr,
+}
 
-pub fn init(p: &Point) -> State { State { limbs: p.L as usize, m: p.M as usize } }
+pub fn init(p: &Point) -> State {
+    let limbs = p.L as usize;
+    State { limbs, m: p.M as usize, root: fe(&p.root.data, 0, limbs) }
+}
 
 pub fn run(state: &mut State, inp: &Inputs) -> Outputs {
     let (limbs, m) = (state.limbs, state.m);
@@ -43,8 +52,8 @@ pub fn run(state: &mut State, inp: &Inputs) -> Outputs {
     coeffs.resize(m, Fr::from(0u64));
     let domain = Radix2EvaluationDomain::<Fr>::new(m)
         .expect("a power of two within the field's two-adicity");
-    assert_eq!(domain.group_gen, fe(&inp.root.data, 0, limbs),
-               "the domain's root is not the one the case names");
+    assert_eq!(domain.group_gen, state.root,
+               "the domain's root is not the one the point names");
     Outputs { codeword: rows(&domain.fft(&coeffs), limbs) }
 }
 

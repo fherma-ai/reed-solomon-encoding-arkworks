@@ -21,8 +21,6 @@ to answer early.
 ## The shapes
 
 - `message` — tensor<N x L x u64>
-- `q` — tensor<L x u64>
-- `root` — tensor<L x u64>
 - returns `codeword` — tensor<M x L x u64>
 
 ## Generated, and not yours
